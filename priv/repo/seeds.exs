@@ -9,3 +9,10 @@
 #
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
+
+alias PaginateSample.Users
+
+1..21
+|> Enum.each(fn i ->
+  Users.create_user(%{name: "user_#{i}"})
+end)
