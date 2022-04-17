@@ -35,5 +35,6 @@
     <% end %>
   </tbody>
 </table>
+<PaginateSample.Components.Paginator.render total_entries={@users.total_entries} page_size={@users.page_size} page={@users.page_number} total_pages={@users.total_pages} />
 
 <span><%= live_patch "New User", to: Routes.user_index_path(@socket, :new) %></span>

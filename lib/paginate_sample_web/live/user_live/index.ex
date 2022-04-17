@@ -4,9 +4,12 @@ defmodule PaginateSampleWeb.UserLive.Index do
   alias PaginateSample.Users
   alias PaginateSample.Users.User
 
+  @default_page 1
+  @default_page_size 10
+
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, assign(socket, :users, list_users())}
+    {:ok, socket}
   end
 
   @impl true
@@ -26,10 +29,11 @@ defmodule PaginateSampleWeb.UserLive.Index do
     |> assign(:user, %User{})
   end
 
-  defp apply_action(socket, :index, _params) do
+  defp apply_action(socket, :index, params) do
     socket
     |> assign(:page_title, "Listing Users")
     |> assign(:user, nil)
+    |> assign(:users, list_users(params))
   end
 
   @impl true
@@ -40,7 +44,53 @@ defmodule PaginateSampleWeb.UserLive.Index do
     {:noreply, assign(socket, :users, list_users())}
   end
 
-  defp list_users do
+  @impl true
+  def handle_event("update_page", %{"page" => page}, socket) do
+    params =
+      socket.assigns
+      |> Map.get(:users)
+      |> Map.take([:page_number, :page_size])
+      |> Map.merge(%{page_number: page})
+      |> Keyword.new()
+
+    {:noreply,
+     push_redirect(socket,
+       to: Routes.user_index_path(socket, :index, params)
+     )}
+  end
+
+  @impl true
+  def handle_event("update_page_size", %{"page_size" => page_size}, socket) do
+    params =
+      socket.assigns
+      |> Map.get(:users)
+      |> Map.take([:page_number, :page_size])
+      |> Map.merge(%{page_size: page_size})
+      |> Keyword.new()
+
+    {:noreply,
+     push_redirect(socket,
+       to: Routes.user_index_path(socket, :index, params)
+     )}
+  end
+
+  defp list_users() do
+    Users.list_users()
+  end
+
+  defp list_users(%{"page_number" => page, "page_size" => page_size}) do
+    Users.list_users(page, page_size)
+  end
+
+  defp list_users(%{"page_number" => page}) do
+    Users.list_users(page, @default_page_size)
+  end
+
+  defp list_users(%{"page_size" => page_size}) do
+    Users.list_users(@default_page, page_size)
+  end
+
+  defp list_users(%{}) do
     Users.list_users()
   end
 end

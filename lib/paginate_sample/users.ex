@@ -17,8 +17,20 @@ defmodule PaginateSample.Users do
       [%User{}, ...]
 
   """
-  def list_users do
-    Repo.all(User)
+  def list_users() do
+    build_list_query()
+    |> Repo.paginate()
+  end
+
+  def list_users(page, page_size) do
+    build_list_query()
+    |> Repo.paginate(page: page, page_size: page_size)
+  end
+
+  defp build_list_query() do
+    from(u in User,
+      order_by: [desc: u.id]
+    )
   end
 
   @doc """
