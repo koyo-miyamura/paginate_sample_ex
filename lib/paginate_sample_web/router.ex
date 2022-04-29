@@ -19,6 +19,8 @@ defmodule PaginateSampleWeb.Router do
 
     get "/", PageController, :index
 
+    post "/export", ExportUserController, :create
+
     live "/users", UserLive.Index, :index
     live "/users/new", UserLive.Index, :new
     live "/users/:id/edit", UserLive.Index, :edit

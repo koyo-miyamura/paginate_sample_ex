@@ -13,6 +13,12 @@
   </.modal>
 <% end %>
 
+<div>
+  <%= link to: Routes.export_user_path(@socket, :create), method: :post do %>
+    Export
+  <% end %>
+</div>
+
 <ul>
 
   <li>
