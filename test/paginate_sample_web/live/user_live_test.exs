@@ -85,6 +85,12 @@ defmodule PaginateSampleWeb.UserLiveTest do
       assert html =~ user.name
     end
 
+    test "not found", %{conn: conn, user: user} do
+      assert_raise(Ecto.NoResultsError, fn ->
+        {:ok, _show_live, _html} = live(conn, Routes.user_show_path(conn, :show, user.id + 1))
+      end)
+    end
+
     test "updates user within modal", %{conn: conn, user: user} do
       {:ok, show_live, _html} = live(conn, Routes.user_show_path(conn, :show, user))
 
