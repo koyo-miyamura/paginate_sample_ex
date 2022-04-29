@@ -73,6 +73,18 @@ defmodule PaginateSampleWeb.UserLiveTest do
       assert index_live |> element("#user-#{user.id} a", "Delete") |> render_click()
       refute has_element?(index_live, "#user-#{user.id}")
     end
+
+    import PaginateSampleWeb.LiveViewTestHelpers
+
+    test "deletes not existing user in listing", %{conn: conn, user: user} do
+      {:ok, index_live, _html} = live(conn, Routes.user_index_path(conn, :index))
+
+      user |> PaginateSample.Repo.delete()
+
+      assert_error_inside_process(Ecto.NoResultsError, fn ->
+        index_live |> element("#user-#{user.id} a", "Delete") |> render_click()
+      end)
+    end
   end
 
   describe "Show" do
