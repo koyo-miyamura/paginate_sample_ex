@@ -7,11 +7,7 @@ defmodule PaginateSampleWeb.ExportUserController do
     fields = [:id, :name, :inserted_at, :updated_at]
     csv_data = csv_content(Users.list_users() |> Map.get(:entries), fields)
 
-    conn
-    |> put_resp_content_type("text/csv")
-    |> put_resp_header("content-disposition", "attachment; filename=\"export.csv\"")
-    |> put_root_layout(false)
-    |> send_resp(200, csv_data)
+    send_download(conn, {:binary, csv_data}, filename: "export.csv")
   end
 
   defp csv_content(records, fields) do
