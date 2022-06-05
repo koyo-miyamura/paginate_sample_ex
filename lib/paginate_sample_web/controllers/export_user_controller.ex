@@ -4,10 +4,19 @@ defmodule PaginateSampleWeb.ExportUserController do
   alias PaginateSample.Users
 
   def create(conn, _params) do
-    fields = [:id, :name, :inserted_at, :updated_at]
-    csv_data = csv_content(Users.list_users() |> Map.get(:entries), fields)
+    send_download(conn, {:binary, csv_data()}, filename: "export.csv")
+  end
 
-    send_download(conn, {:binary, csv_data}, filename: "export.csv")
+  defp csv_data do
+    csv_content(users(), fields())
+  end
+
+  defp users do
+    Users.list_users() |> Map.get(:entries)
+  end
+
+  defp fields do
+    [:id, :name, :inserted_at, :updated_at]
   end
 
   defp csv_content(records, fields) do
