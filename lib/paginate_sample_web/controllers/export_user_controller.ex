@@ -20,18 +20,15 @@ defmodule PaginateSampleWeb.ExportUserController do
   end
 
   defp csv_content(records, fields) do
-    data =
-      records
-      |> Enum.map(fn record ->
-        record
-        |> Map.from_struct()
-        |> Map.take(fields)
-        |> Map.values()
-      end)
+    data = records |> Enum.map(&fetch_by_fields_order(&1, fields))
 
     ([fields] ++ data)
     |> CSV.encode()
     |> Enum.to_list()
     |> to_string()
+  end
+
+  defp fetch_by_fields_order(record, fields) do
+    fields |> Enum.map(fn field -> Map.fetch!(record, field) end)
   end
 end
