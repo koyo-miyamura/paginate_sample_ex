@@ -25,8 +25,7 @@ defmodule PaginateSampleWeb.ExportUserController do
       |> Enum.map(fn record ->
         record
         |> Map.from_struct()
-        |> Map.take([])
-        |> Map.merge(Map.take(record, fields))
+        |> Map.take(fields)
         |> Map.values()
       end)
 
