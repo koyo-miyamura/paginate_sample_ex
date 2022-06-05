@@ -12,7 +12,7 @@ defmodule PaginateSampleWeb.ExportUserController do
   end
 
   defp users do
-    Users.list_users() |> Map.get(:entries)
+    Users.list_all_users()
   end
 
   defp fields do

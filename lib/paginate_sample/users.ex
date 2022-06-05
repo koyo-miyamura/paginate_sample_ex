@@ -22,6 +22,10 @@ defmodule PaginateSample.Users do
     |> Repo.paginate()
   end
 
+  def list_all_users() do
+    Repo.all(User)
+  end
+
   def list_users(page, page_size) do
     build_list_query()
     |> Repo.paginate(page: page, page_size: page_size)
