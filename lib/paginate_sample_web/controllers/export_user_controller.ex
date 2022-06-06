@@ -8,7 +8,9 @@ defmodule PaginateSampleWeb.ExportUserController do
   end
 
   defp csv_data do
-    csv_content(users(), fields())
+    users()
+    |> CSV.encode(headers: fields())
+    |> Enum.join()
   end
 
   defp users do
@@ -17,24 +19,5 @@ defmodule PaginateSampleWeb.ExportUserController do
 
   defp fields do
     [:id, :name, :inserted_at, :updated_at]
-  end
-
-  defp csv_content(records, fields) do
-    csv_content_list(records, fields)
-    |> CSV.encode()
-    |> Enum.to_list()
-    |> to_string()
-  end
-
-  defp csv_content_list(records, fields) do
-    [fields] ++ csv_data_list(records, fields)
-  end
-
-  defp csv_data_list(records, fields) do
-    records |> Enum.map(&fetch_by_fields_order(&1, fields))
-  end
-
-  defp fetch_by_fields_order(record, fields) do
-    fields |> Enum.map(fn field -> Map.fetch!(record, field) end)
   end
 end
