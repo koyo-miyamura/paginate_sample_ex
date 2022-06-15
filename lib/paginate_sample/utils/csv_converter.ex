@@ -19,8 +19,16 @@ defmodule PaginateSample.Utils.CsvConverter do
 
   """
   def to_csv(records, fields) do
-    records
-    |> CSV.encode(headers: fields)
+    ([fields] ++ csv_content(records, fields))
+    |> NimbleCSV.RFC4180.dump_to_stream()
     |> Enum.join()
+  end
+
+  defp csv_content(records, fields) do
+    records
+    |> Enum.map(fn record ->
+      fields
+      |> Enum.map(&Map.get(record, &1))
+    end)
   end
 end
